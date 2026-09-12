@@ -1,0 +1,73 @@
+# yaml-language-server: $schema=https://nfpm.goreleaser.com/schema.json
+name: playit-openrc
+arch: ${PLAYIT_NFPM_ARCH}
+platform: linux
+version: ${PLAYIT_VERSION}
+version_schema: semver
+release: ${PLAYIT_PACKAGE_RELEASE}
+section: net
+priority: optional
+maintainer: Patrick Lorio <patrick@playit.gg>
+description: Making it easy to play games with friends. Makes your server public
+homepage: https://playit.gg
+license: BSD-2-Clause
+depends:
+  - logrotate
+  - openrc
+  - "!playit"
+conflicts:
+  - playit
+contents:
+  - src: ${PLAYIT_CLI_BIN}
+    dst: /opt/playit/agent
+    expand: true
+    file_info:
+      mode: 0755
+  - src: ${PLAYITD_BIN}
+    dst: /opt/playit/playitd
+    expand: true
+    file_info:
+      mode: 0755
+  - src: ./linux/playit
+    dst: /opt/playit/playit
+    file_info:
+      mode: 0755
+  - src: /opt/playit/playit
+    dst: /usr/bin/playit
+    type: symlink
+  - src: /opt/playit/playitd
+    dst: /usr/bin/playitd
+    type: symlink
+  - src: ./linux/logrotate.conf
+    dst: /etc/logrotate.d/playit
+    file_info:
+      mode: 0644
+  - src: ./linux/playit.openrc
+    dst: /etc/init.d/playit
+    file_info:
+      mode: 0755
+  - src: ./linux/playit.service
+    dst: /opt/playit/share/init/systemd/playit.service
+    file_info:
+      mode: 0644
+  - src: ./linux/playit.openrc
+    dst: /opt/playit/share/init/openrc/playit
+    file_info:
+      mode: 0755
+  - dst: /etc/playit
+    type: dir
+    file_info:
+      mode: 0750
+      owner: playit
+      group: playit
+  - dst: /var/log/playit
+    type: dir
+    file_info:
+      mode: 0750
+      owner: playit
+      group: playit
+scripts:
+  preinstall: ./build-scripts/nfpm/openrc/preinstall.sh
+  postinstall: ./build-scripts/nfpm/openrc/postinstall.sh
+  preremove: ./build-scripts/nfpm/openrc/preremove.sh
+  postremove: ./build-scripts/nfpm/openrc/postremove.sh

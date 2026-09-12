@@ -1,0 +1,25 @@
+[package]
+name = "playit-api-client"
+version = "0.2.0"
+edition = "2024"
+description = "Contains the logic to create a playit.gg agent"
+license = "BSD-2-Clause"
+repository = "https://github.com/playit-cloud/playit-agent"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+tokio = { workspace = true }
+tracing = { workspace = true }
+serde_json = { workspace = true }
+serde = { workspace = true }
+uuid = { workspace = true }
+byteorder = { workspace = true }
+chrono = { workspace = true }
+
+# use rustls with "ring" and not "aws-lc-rs", having trouble cross compiling "aws-lc-rs"
+reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls", "gzip"] }
+rustls = { version = "0.23", default-features = false, features = ["ring"] }
+
+[dev-dependencies]
+tracing-subscriber = { workspace = true }
